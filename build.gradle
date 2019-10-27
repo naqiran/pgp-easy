@@ -1,0 +1,18 @@
+plugins {
+    id 'java'
+}
+
+group 'com.naqiran'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.bouncycastle:bcpg-jdk15on:1.62"
+    compileOnly "org.projectlombok:lombok:1.18.8"
+    testCompile "junit:junit:4.12"
+}
