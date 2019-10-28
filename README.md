@@ -1,6 +1,7 @@
 # Simple Bouncy Castle PGP Encryptor and Decryptor
  
 # Encrypt:
+```java
 BCPGPEasyEncrypt encryptConfiguration = BCPGPEasyConfiguration.encrypt()
                 .builder()
                 .armor(true)
@@ -12,8 +13,9 @@ BCPGPEasyEncrypt encryptConfiguration = BCPGPEasyConfiguration.encrypt()
                 .outputFileName("test.txt.pgp")
                 .build();
         PGPEncryptor.encrypt(encryptConfiguration);
-        
-# Decrypt:        
+```
+# Decrypt:
+```java
 BCPGPEasyDecrypt decryptConfiguration = BCPGPEasyConfiguration.decrypt()
                 .builder()
                 .armor(true)
@@ -23,3 +25,4 @@ BCPGPEasyDecrypt decryptConfiguration = BCPGPEasyConfiguration.decrypt()
                 .outputFileName("test.txt")
                 .build();
         PGPDecryptor.decrypt(decryptConfiguration);
+```    
