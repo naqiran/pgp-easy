@@ -72,7 +72,7 @@ public class PGPDecryptor {
         } catch (final Exception e) {
             log.error("Error in decrypting the file: {}", configuration.getFileName(), e);
         }
-        return configuration.getOutputFileName();
+        return null;
     }
 
     public static PGPPrivateKey getPrivateKey(final long keyId, final BCPGPEasyDecrypt configuration) {

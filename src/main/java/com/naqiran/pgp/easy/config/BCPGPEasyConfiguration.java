@@ -2,40 +2,61 @@ package com.naqiran.pgp.easy.config;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.bouncycastle.openpgp.PGPCompressedData;
+import org.bouncycastle.openpgp.PGPEncryptedData;
 
 @Data
 public class BCPGPEasyConfiguration {
-    public static BCPGPEasyEncrypt encrypt() {
-        return new BCPGPEasyEncrypt();
+    public static BCPGPEasyEncrypt.BCPGPEasyEncryptBuilder encrypt() {
+        return new BCPGPEasyEncrypt.BCPGPEasyEncryptBuilder();
     }
 
-    public static BCPGPEasyDecrypt decrypt() {
-        return new BCPGPEasyDecrypt();
+    public static BCPGPEasyDecrypt.BCPGPEasyDecryptBuilder decrypt() {
+        return new BCPGPEasyDecrypt.BCPGPEasyDecryptBuilder();
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
     public static class BCPGPEasyEncrypt {
-        private boolean armor;
-        private int encryptionAlgorithm;
-        private int compressionType;
-        private boolean integrityCheck;
+        @Builder.Default
+        private boolean armor = true;
+
+        /**
+         * Defualt Value is PGPEncryptedData.AES_128
+         */
+        @Builder.Default
+        private int encryptionAlgorithm = PGPEncryptedData.AES_128;
+
+        /**
+         * Defualt Value is PGPEncryptedData.AES_128
+         */
+        @Builder.Default
+        private int compressionType = PGPCompressedData.ZLIB;
+
+        @Builder.Default
+        private boolean integrityCheck = true;
         private String recipient;
         private String fileName;
         private String keyFileName;
         private String outputFileName;
+
+        public String getOutputFileName() {
+            return outputFileName != null && outputFileName.length() > 0 ? outputFileName : fileName.replaceAll(".pgp", "");
+        }
     }
 
     @Data
     @Builder
-    @NoArgsConstructor
     public static class BCPGPEasyDecrypt {
-        private boolean armor;
+        @Builder.Default
+        private boolean armor = true;
         private String passphrase;
         private String fileName;
         private String keyFileName;
         private String outputFileName;
+
+        public String getOutputFileName() {
+            return outputFileName != null && outputFileName.length() > 0 ? outputFileName : fileName + ".pgp";
+        }
     }
 }
