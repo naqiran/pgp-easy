@@ -1,6 +1,6 @@
 package com.naqiran.pgp.easy;
 
-import com.naqiran.pgp.easy.config.BCPGPEasyConfiguration;
+import com.naqiran.pgp.easy.config.BCPGPEasyConfiguration.BCPGPEasyEncrypt;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.bcpg.ArmoredOutputStream;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -29,22 +29,20 @@ import java.util.Iterator;
 @Slf4j
 public class PGPEncryptor {
 
-    public final String encrypt(BCPGPEasyConfiguration configuration) {
+    public static final String encrypt(BCPGPEasyEncrypt configuration) {
         final String encryptedFileName = configuration.getOutputFileName() != null ? configuration.getOutputFileName() : configuration.getFileName() + ".pgp";
         Security.addProvider(new BouncyCastleProvider());
-        final int cryptoAlgorithm = configuration.getEncryptionAlgorithm();
-        final int compressionType = configuration.getCompressionType();
         try (final OutputStream outputStream = configuration.isArmor() ? new ArmoredOutputStream(IOUtils.getOutputStream(encryptedFileName)) :
                 IOUtils.getOutputStream(encryptedFileName)) {
             PGPPublicKey publicKey = getPublicKey(configuration);
             if (publicKey != null) {
-                JcePGPDataEncryptorBuilder builder = new JcePGPDataEncryptorBuilder(cryptoAlgorithm)
+                JcePGPDataEncryptorBuilder builder = new JcePGPDataEncryptorBuilder(configuration.getEncryptionAlgorithm())
                         .setSecureRandom(new SecureRandom())
                         .setWithIntegrityPacket(configuration.isIntegrityCheck())
                         .setProvider(new BouncyCastleProvider());
                 final PGPEncryptedDataGenerator encryptedDataGenerator = new PGPEncryptedDataGenerator(builder);
                 encryptedDataGenerator.addMethod(new JcePublicKeyKeyEncryptionMethodGenerator(publicKey).setProvider(new BouncyCastleProvider()));
-                PGPCompressedDataGenerator compressedDataGenerator = new PGPCompressedDataGenerator(compressionType);
+                PGPCompressedDataGenerator compressedDataGenerator = new PGPCompressedDataGenerator(configuration.getCompressionType());
                 try (final OutputStream encryptedStream = encryptedDataGenerator.open(outputStream, new byte[1 << 16]);
                      OutputStream compressedStream = compressedDataGenerator.open(encryptedStream)) {
                     writeFileToLiteralData(compressedStream, PGPLiteralData.BINARY, configuration.getFileName(), new byte[1 << 16]);
@@ -61,7 +59,7 @@ public class PGPEncryptor {
         return null;
     }
 
-    public static PGPPublicKey getPublicKey(final BCPGPEasyConfiguration configuration) {
+    private static PGPPublicKey getPublicKey(final BCPGPEasyEncrypt configuration) {
         final String keyFileName = configuration.getKeyFileName();
         try (final InputStream keyStream = IOUtils.getInputStream(keyFileName)) {
             final PGPPublicKeyRingCollection pgpPublicKeyRingCollection = new PGPPublicKeyRingCollection(PGPUtil.getDecoderStream(keyStream), new JcaKeyFingerprintCalculator());

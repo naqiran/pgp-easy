@@ -1,6 +1,6 @@
 package com.naqiran.pgp.easy;
 
-import com.naqiran.pgp.easy.config.BCPGPEasyConfiguration;
+import com.naqiran.pgp.easy.config.BCPGPEasyConfiguration.BCPGPEasyDecrypt;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openpgp.PGPCompressedData;
@@ -29,7 +29,7 @@ import java.util.Iterator;
 @Slf4j
 public class PGPDecryptor {
 
-    public static final String decrypt(final BCPGPEasyConfiguration configuration) {
+    public static final String decrypt(final BCPGPEasyDecrypt configuration) {
         Security.addProvider(new BouncyCastleProvider());
         String decryptedFileName = configuration.getOutputFileName();
         try (final InputStream inputStream = PGPUtil.getDecoderStream(IOUtils.getInputStream(configuration.getFileName()))) {
@@ -75,7 +75,7 @@ public class PGPDecryptor {
         return configuration.getOutputFileName();
     }
 
-    public static PGPPrivateKey getPrivateKey(final long keyId, final BCPGPEasyConfiguration configuration) {
+    public static PGPPrivateKey getPrivateKey(final long keyId, final BCPGPEasyDecrypt configuration) {
         final String keyFileName = configuration.getKeyFileName();
         try (final InputStream keyStream = IOUtils.getInputStream(keyFileName)) {
             final PGPSecretKeyRingCollection keyRingCollection = new PGPSecretKeyRingCollection(PGPUtil.getDecoderStream(keyStream), new BcKeyFingerprintCalculator());
