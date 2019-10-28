@@ -30,10 +30,9 @@ import java.util.Iterator;
 public class PGPEncryptor {
 
     public static final String encrypt(BCPGPEasyEncrypt configuration) {
-        final String encryptedFileName = configuration.getOutputFileName() != null ? configuration.getOutputFileName() : configuration.getFileName() + ".pgp";
         Security.addProvider(new BouncyCastleProvider());
-        try (final OutputStream outputStream = configuration.isArmor() ? new ArmoredOutputStream(IOUtils.getOutputStream(encryptedFileName)) :
-                IOUtils.getOutputStream(encryptedFileName)) {
+        try (final OutputStream outputStream = configuration.isArmor() ? new ArmoredOutputStream(IOUtils.getOutputStream(configuration.getOutputFileName())) :
+                IOUtils.getOutputStream(configuration.getOutputFileName())) {
             PGPPublicKey publicKey = getPublicKey(configuration);
             if (publicKey != null) {
                 JcePGPDataEncryptorBuilder builder = new JcePGPDataEncryptorBuilder(configuration.getEncryptionAlgorithm())
@@ -46,7 +45,7 @@ public class PGPEncryptor {
                 try (final OutputStream encryptedStream = encryptedDataGenerator.open(outputStream, new byte[1 << 16]);
                      OutputStream compressedStream = compressedDataGenerator.open(encryptedStream)) {
                     writeFileToLiteralData(compressedStream, PGPLiteralData.BINARY, configuration.getFileName(), new byte[1 << 16]);
-                    return encryptedFileName;
+                    return configuration.getOutputFileName();
                 }
             } else {
                 log.error("No Public Key found for the user");

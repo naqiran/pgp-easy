@@ -12,8 +12,9 @@ repositories {
 }
 
 dependencies {
-    compile "org.bouncycastle:bcpg-jdk15on:1.62"
-    compile "org.slf4j:slf4j-api:1.7.28"
+    implementation "org.bouncycastle:bcpg-jdk15on:1.62"
+    implementation "org.slf4j:slf4j-api:1.7.28"
+    implementation "org.slf4j:slf4j-simple:1.7.28"
     compileOnly 'org.projectlombok:lombok:1.18.10'
     annotationProcessor "org.projectlombok:lombok:1.18.10"
     testCompile "junit:junit:4.12"

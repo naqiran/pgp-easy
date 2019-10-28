@@ -31,7 +31,6 @@ public class PGPDecryptor {
 
     public static final String decrypt(final BCPGPEasyDecrypt configuration) {
         Security.addProvider(new BouncyCastleProvider());
-        String decryptedFileName = configuration.getOutputFileName();
         try (final InputStream inputStream = PGPUtil.getDecoderStream(IOUtils.getInputStream(configuration.getFileName()))) {
             final JcaPGPObjectFactory pgpObjectFactory = new JcaPGPObjectFactory(inputStream);
             PGPEncryptedDataList encryptedDataList = null;
@@ -60,11 +59,11 @@ public class PGPDecryptor {
                 }
                 if (message instanceof PGPLiteralData) {
                     final PGPLiteralData literalData = (PGPLiteralData) message;
-                    try (OutputStream outputStream = new BufferedOutputStream(IOUtils.getOutputStream(decryptedFileName));
+                    try (OutputStream outputStream = new BufferedOutputStream(IOUtils.getOutputStream(configuration.getOutputFileName()));
                          final InputStream literalStream = literalData.getInputStream()) {
                         Streams.pipeAll(literalStream, outputStream);
                     }
-                    return decryptedFileName;
+                    return configuration.getOutputFileName();
                 }
             } else {
                 log.error("No Private Key Exist to Decrypt: {} - {}", keyId, configuration.getFileName());

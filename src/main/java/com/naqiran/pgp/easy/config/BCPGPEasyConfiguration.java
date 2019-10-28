@@ -41,7 +41,7 @@ public class BCPGPEasyConfiguration {
         private String outputFileName;
 
         public String getOutputFileName() {
-            return outputFileName != null && outputFileName.length() > 0 ? outputFileName : fileName.replaceAll(".pgp", "");
+            return outputFileName != null && outputFileName.length() > 0 ? outputFileName : fileName + ".pgp";
         }
     }
 
@@ -56,7 +56,7 @@ public class BCPGPEasyConfiguration {
         private String outputFileName;
 
         public String getOutputFileName() {
-            return outputFileName != null && outputFileName.length() > 0 ? outputFileName : fileName + ".pgp";
+            return outputFileName != null && outputFileName.length() > 0 ? outputFileName : fileName.replaceAll("\\.pgp", "");
         }
     }
 }
