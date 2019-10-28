@@ -21,6 +21,9 @@ public class PGPEasyRunner {
                 .encryptionAlgorithm(PGPEncryptedData.AES_128)
                 .encryptionAlgorithm(PGPCompressedData.ZLIB)
                 .recipient("recipient")
+                .fileName("test.txt")
+                .keyFileName("key.asc")
+                .outputFileName("test.txt.pgp")
                 .build();
         PGPEncryptor.encrypt(encryptConfiguration);
     }
@@ -30,6 +33,9 @@ public class PGPEasyRunner {
                 .builder()
                 .armor(true)
                 .passphrase("passphrase")
+                .fileName("test.txt.pgp")
+                .keyFileName("key.asc")
+                .outputFileName("test.txt")
                 .build();
         PGPDecryptor.decrypt(decryptConfiguration);
     }
